@@ -1,41 +1,43 @@
 import { BsFillPersonFill } from "react-icons/bs";
 import { AiFillMail } from "react-icons/ai";
-import { useState ,useRef } from "react";
-import emailjs from '@emailjs/browser';
+import {  useRef , useState} from "react";
 import { ToastContainer,toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Form() {
-  const form = useRef();
   const [errors, setErrors] = useState({});
 
-  const [formState, setFormState] = useState({
-    name: '',
-    email: '',
-    message: '',
+  const emailRef = useRef();
 
-  });
+  const firstNameRef = useRef();
 
+  const lastNameRef = useRef();
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormState(prevState => ({ ...prevState, [name]: value }));
-  };
+  const descriptionRef = useRef();
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const errors = {};
-    if (!formState.name) {
-      errors.name = 'Please enter your name.';
+    const email = emailRef.current.value;
+    const firstname = firstNameRef.current.value;
+    const lastname = lastNameRef.current.value;
+    const description = descriptionRef.current.value;
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(email) || !emailRef) {
+      errors.emailRef = 'Please enter your valide email and correct type of email.';
     }
-    if (!formState.email) {
-      errors.email = 'Please enter your email address.';
+    if (!firstname) {
+      errors.firstNameRef = 'Please enter your first name.';
     }
-    if (!formState.message) {
-      errors.message = 'Please enter a message.';
+
+    if (!lastname) {
+      errors.lastNameRef = 'Please enter your last name.';
     }
-    
+    if (!description) {
+      errors.descriptionRef = 'Please enter a message.';
+    }
     // If there are errors, set them in state and return early
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
@@ -53,14 +55,14 @@ export default function Form() {
     }
 
     
-
-    emailjs.sendForm('service_970qz3p', 'template_a8470n9', form.current, 'qTj7p4_ukRXTE_tGf')
-    .then((result) => {
-        console.log(result.text);
-        console.log("message sent");
-    }, (error) => {
-        console.log(error.text);
-    });
+    const form = event.target;
+    console.log(form);
+    const data = new FormData(form);
+  
+    fetch('https://crm.zoho.com/crm/WebToLeadForm', {
+      method: 'POST',
+      body: data,
+    })
 
     toast.success('🦄 Wow so easy!', {
       position: "top-right",
@@ -73,15 +75,13 @@ export default function Form() {
       theme: "colored",
       });
 
-    console.log(formState);
-
 
 
      // Do something with the form data
   };
   return (
 <>
-<div className="bg-[#f7f7f6] relative p-3 m-5  h-[450px] sm:w-[450px] md:w-[450px] lg:w-[450px]  xl:w-[450px] rounded-[32px]   overflow-hidden flex justify-center items-center lg:p-12 lg:mr-[550px]">
+<div className="bg-[#f7f7f6] relative p-3 m-5  h-[450px] sm:w-[450px] md:w-[450px] lg:w-[450px]  xl:w-[450px] rounded-[32px]   overflow-hidden flex justify-center items-center lg:p-12 lg:mr-[550px] drop-shadow-2xl shadow-lg shadow-indigo-500/40 ">
 <ToastContainer
 position="top-right"
 autoClose={5000}
@@ -102,47 +102,44 @@ theme="colored"
 
 
 
- <form ref={form} className="mt-2 " onSubmit={handleSubmit}>
+ <form className="mt-2 " onSubmit={handleSubmit}>
+ <div className="hidden" dangerouslySetInnerHTML={{ __html: <script id='formScript5663701000000453003' src='https://crm.zoho.com/crm/WebFormServeServlet?rid=6148e19dbcdd88b2423ccb2b51f88e8cd71c60bb2d2cca86a389f084ec051845gidc501eab30839030bfbb7babf665366ebfac3028079f031f35a9668131a35a1bd&script=$sYG'></script> }} />
 
- <div className={`flex justify-evenly mb-4  mx-1 ${errors.name?'text-[#a09494]': 'text-[#942727]'}`}>
+  
+ <input type='hidden'  name='xnQsjsdp' value='c501eab30839030bfbb7babf665366ebfac3028079f031f35a9668131a35a1bd'/>
+ <input type='hidden' name='zc_gad' id='zc_gad' value=''/>
+ <input type='hidden'  name='xmIwtLD' value='6148e19dbcdd88b2423ccb2b51f88e8cd71c60bb2d2cca86a389f084ec051845'/>
+ <input type='hidden'   name='actionType' value='TGVhZHM='/>
+ <input type='hidden'  name='returnURL' value='https&#x3a;&#x2f;&#x2f;crm.zoho.com' />
 
-  <div className="relative flex items-center m-1">
+ <div className={`flex justify-evenly mb-4  mx-1`}>
+
+  <div className={`relative flex items-center m-1 drop-shadow-2xl ${errors.firstNameRef?'text-[#a09494]': 'text-[#942727]'} `}>
   <div className="absolute pointer-events-none pl-3 text-[#999]"><BsFillPersonFill/></div>
-  <input type="text" name="name" placeholder={errors.name?errors.name:`Name`} className={`font-sans static w-15 sm:w-30   lg:w-30 font-medium  ${errors.name?'placeholder-red-500 border border-[#902222] ': 'placeholder-[#999] border border-none'} text-[11px] pl-9 rounded-r-[30px] rounded-l-[30px] ring-1 ring-[#e0d4e4] p-3 focus:outline-none hover:bg-slate-300  shadow-sm`} onChange={handleInputChange} />
+  <input type="text" name="First Name"   placeholder={errors.firstNameRef?errors.firstNameRef:`Name`} ref={firstNameRef} className={` ${errors.firstNameRef?'placeholder-red-500 border border-[#902222] ': 'placeholder-[#999] border border-none'} text-[11px] pl-9 rounded-r-[30px] w-15 sm:w-30  lg:w-30  rounded-l-[30px] ring-1 ring-[#e0d4e4] p-3 focus:outline-none hover:bg-slate-300  shadow-sm`}  />
   </div>
  
-  <div className="relative flex items-center m-1">
+  <div className={ `relative flex items-center m-1 drop-shadow-2xl ${errors.lastNameRef?'text-[#a09494]': 'text-[#942727]'} `}>
   <div className="absolute pointer-events-none pl-3 text-[#999]"><BsFillPersonFill/></div>
-  <input type="text" name="name" placeholder={errors.name?errors.name:`Name`} className={`font-sans static w-15 sm:w-30   lg:w-30 font-medium  ${errors.name?'placeholder-red-500 border border-[#902222] ': 'placeholder-[#999] border border-none'} text-[11px] pl-9 rounded-r-[30px] rounded-l-[20px] ring-1 ring-[#e0d4e4] p-3 focus:outline-none hover:bg-slate-300  shadow-sm`} onChange={handleInputChange} />
+  <input type="text" name="Last Name" ref={lastNameRef} placeholder={errors.lastNameRef? errors.lastNameRef:`Last Name`} className={`  ${errors.lastNameRef?'placeholder-red-500 border border-[#902222] ': 'placeholder-[#999] border border-none'} font-sans static w-15 sm:w-30   lg:w-30 font-medium  placeholder-[#999] border border-none'} text-[11px] pl-9 rounded-r-[30px] rounded-l-[20px] ring-1 ring-[#e0d4e4] p-3 focus:outline-none hover:bg-slate-300  shadow-sm`}  />
   </div>
 
 
 
 </div>
 
-  <div className="relative flex items-center mb-4  mx-2">
+  <div className="relative flex items-center mb-4  mx-2 drop-shadow-2xl">
   <div className="absolute pointer-events-none pl-3 text-[#999]"><AiFillMail/></div>
-  <input type="email" name="email" placeholder={errors.email?errors.email:`Email`}  className={`font-sans static sm:w-60  w-50 md:w-80 lg:w-100 font-medium ${errors.email?'placeholder-red-500 border border-[#902222] ': 'placeholder-[#999] border border-none'}  text-[11px] pl-9 rounded-r-[30px] rounded-l-[20px] ring-1 ring-[#e0d4e4] p-3 focus:outline-none  hover:bg-slate-300 shadow-sm`} onChange={handleInputChange} />
+  <input type="email" name="Email" ref={emailRef}   placeholder={errors.emailRef?errors.emailRef:`Email`} className={` ${errors.emailRef?'placeholder-red-500 border border-[#902222] ': 'placeholder-[#999] border border-none'} font-sans static sm:w-60  w-50 md:w-80 lg:w-100 font-medium  border border-none'}  text-[11px] pl-9 rounded-r-[30px] rounded-l-[20px] ring-1 ring-[#e0d4e4] p-3 focus:outline-none  hover:bg-slate-300 shadow-sm`}  />
 
   </div>
 
-  <div className="relative flex items-center  mx-2">
-  <textarea rows="6" name="message" placeholder={errors.message?errors.message:`Message`} className={`font-sans static sm:w-[400px]  w-[400px] md:w-[400px] lg:w-[400px] font-medium ${errors.message?'placeholder-red-500 border border-[#902222] ': 'placeholder-[#999]border border-none'}  text-[11px] pl-9 rounded-r-[30px] rounded-l-[20px] ring-1 ring-[#e0d4e4] p-3 focus:outline-none  hover:bg-slate-300 shadow-sm`} onChange={handleInputChange} />
+  <div className={`relative flex items-center  mx-2 drop-shadow-2xl ${errors.descriptionRef?'text-[#a09494]': 'text-[#942727]'}`}>
+  <textarea rows="6" name="Description"  ref={descriptionRef}  placeholder={errors.descriptionRef?errors.descriptionRef:` Message `} className={`${errors.descriptionRef?'placeholder-red-500 border border-[#902222] ': 'placeholder-[#999] border border-none'} font-sans static sm:w-[400px]  w-[400px] md:w-[400px] lg:w-[400px] font-medium placeholder-[#999]border border-none  text-[11px] pl-9 rounded-r-[30px] rounded-l-[20px] ring-1 ring-[#e0d4e4] p-3 focus:outline-none  hover:bg-slate-300 shadow-sm`}  />
   </div>
-{/* 
-  <div class="relative justify-center items-center mt-5" data-te-input-wrapper-init>
-  <div className="absolute mt-3  pointer-events-none pl-3 text-[#999]"><AiFillMail/></div>
-      <input
-        type="email"
-        name="test"
-        className={`peer font-sans static sm:w-60 w-50 md:w-80 lg:w-100 font-medium ${errors.message?'placeholder-red-500 border border-[#902222] ': 'placeholder-[#999]border border-none'}  text-[11px] pl-9 rounded-r-[30px] rounded-l-[20px] ring-1 ring-[#e0d4e4] p-3 focus:outline-none  hover:bg-slate-300 shadow-sm`}
-       />
-      <label
-        className={`pl-5 mt-1.5 font-sans pointer-events-none text-[11px]  absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6]  text-[#999] transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[1] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.3rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-neutral-200`}
-        >Email</label>
-    </div> */}
 
-  <div className=" justify-center items-center absolute bottom-50 right-0 mt-[50px] pr-2 z-40">
+
+  <div className=" justify-center items-center absolute bottom-50 right-0 mt-[50px] pr-2 z-40 drop-shadow-2xl">
   <button type="Submit"  className="font-sans  bg-[#8b0d94] hover:bg-[#9e0947]  w-[150px] font-medium text-white text-[10px]  rounded-r-[30px] rounded-l-[20px] ring-1 ring-[#aa17dc]  p-3 focus:outline-none  shadow-sm text-center ">Send</button>
   </div>
   

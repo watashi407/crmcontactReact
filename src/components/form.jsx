@@ -41,7 +41,7 @@ export default function Form() {
     // If there are errors, set them in state and return early
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
-      toast.error('🦄 Too Bad Need Fill Up All fields!', {
+      toast.error('❌Fill Up All fields!', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -64,7 +64,7 @@ export default function Form() {
       body: data,
     })
 
-    toast.success('🦄 Wow so easy!', {
+    toast.success('🦄 Entry sent to crm!', {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -74,7 +74,6 @@ export default function Form() {
       progress: undefined,
       theme: "colored",
       });
-
 
 
      // Do something with the form data
